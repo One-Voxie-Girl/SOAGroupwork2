@@ -45,7 +45,7 @@ public class SoaRestController {
 
     @GetMapping("/activitysuggestion")
     public ResponseEntity<ActivitySuggestion> getActivitySuggestion(@RequestParam String location) {
-        System.out.println(location);
+
 
         ActivitySuggestion activitySuggestion = new ActivitySuggestion();
 
@@ -56,7 +56,14 @@ public class SoaRestController {
             activitySuggestion.setActivity(kb.getActivities().get(0));
 
         }
-//        List<Activity> activities = knowledgeBaseRepo.findActivitiesByWeatherCondition(activitySuggestion.getWeatherData().getWeatherCondition());
+
+
+        activitySuggestion.setRouteData(routeDataService.getRoute(weatherDataService.getLocationByCity(location),
+                weatherDataService.getLocationByCity(activitySuggestion.getActivity().getLocation())));
+
+        activitySuggestion.setSuggestionMessage("The weather is " + activitySuggestion.getWeatherData().getWeatherCondition() + " in " + location + ". You can go to " + activitySuggestion.getActivity().getActivityName() + " in " + activitySuggestion.getActivity().getLocation() + " to enjoy the weather.");
+
+
 
         return ResponseEntity.ok(activitySuggestion);
 

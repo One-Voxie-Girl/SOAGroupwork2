@@ -23,4 +23,12 @@ public class WeatherApiResponseEntity {
     public void setCurrent(Current current) {
         this.current = current;
     }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
 }
