@@ -25,21 +25,80 @@ public class SoaRestController {
         this.routeDataService = routeDataService;
         this.weatherDataService = weatherDataService;
         this.activityRepo = activityRepo;
-
         this.knowledgeBaseRepo = knowledgeBaseRepo;
     }
 
 
+    @GetMapping("/activities")
+    public ResponseEntity<List<Activity>> getActivities() {
+        return ResponseEntity.ok(activityRepo.findAll());
+    }
+
+    @GetMapping("/activity")
+    public ResponseEntity<Activity> getActivity(@RequestParam String activityName) {
+        return ResponseEntity.ok(activityRepo.findActivityByActivityName(activityName));
+    }
+
     @PostMapping("/activity")
-    public ResponseEntity<String> createActivity(@RequestBody Activity activity) {
-
-
-
-        activityRepo.save(activity);
+    public ResponseEntity<String> createActivity(@RequestBody Activity activity, @RequestParam String weatherCondition) {
+        KnowledgeBase knowledgeBase = knowledgeBaseRepo.findKnowledgeBaseByWeatherCondition(weatherCondition);
+        if (knowledgeBase == null) {
+            return ResponseEntity.badRequest().body("Weather condition not found");
+        } else {
+            knowledgeBase.getActivities().add(activity);
+            knowledgeBaseRepo.save(knowledgeBase);
+        }
 
         return ResponseEntity.ok("Activity created");
 
     }
+
+    @PutMapping("/activity")
+    public ResponseEntity<String> updateActivity(@RequestBody Activity activity) {
+        activityRepo.save(activity);
+        return ResponseEntity.ok("Activity updated");
+    }
+
+    @DeleteMapping("/activity")
+    public ResponseEntity<String> deleteActivity(@RequestParam String activityName) {
+        activityRepo.deleteById(activityName);
+        return ResponseEntity.ok("Activity deleted");
+    }
+
+
+    @GetMapping("/knowledgebases")
+    public ResponseEntity<List<KnowledgeBase>> getKnowledgeBases() {
+        return ResponseEntity.ok(knowledgeBaseRepo.findAll());
+    }
+
+    @GetMapping("/knowledgebase")
+    public ResponseEntity<KnowledgeBase> getKnowledgeBase(@RequestParam String weatherCondition) {
+        return ResponseEntity.ok(knowledgeBaseRepo.findKnowledgeBaseByWeatherCondition(weatherCondition));
+    }
+
+    @PostMapping("/knowledgebase")
+    public ResponseEntity<String> createKnowledgeBase(@RequestBody KnowledgeBase knowledgeBase) {
+        knowledgeBaseRepo.save(knowledgeBase);
+        return ResponseEntity.ok("Knowledge base created");
+    }
+
+    @PutMapping("/knowledgebase")
+    public ResponseEntity<String> updateKnowledgeBase(@RequestBody KnowledgeBase knowledgeBase) {
+        knowledgeBaseRepo.save(knowledgeBase);
+        return ResponseEntity.ok("Knowledge base updated");
+    }
+
+    @DeleteMapping("/knowledgebase")
+    public ResponseEntity<String> deleteKnowledgeBase(@RequestParam String weatherCondition) {
+        knowledgeBaseRepo.deleteById(weatherCondition);
+        return ResponseEntity.ok("Knowledge base deleted");
+    }
+
+
+
+
+
+
 
 
 

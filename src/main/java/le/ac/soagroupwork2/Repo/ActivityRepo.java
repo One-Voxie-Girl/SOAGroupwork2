@@ -7,10 +7,12 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ActivityRepo extends CrudRepository<Activity, Integer> {
+public interface ActivityRepo extends CrudRepository<Activity, String> {
     public List<Activity> findAll();
 
-    public void deleteById(Integer id);
+    public void deleteById(String id);
+
+    public Activity findActivityByActivityName(String id);
 
 
 }
